@@ -1,0 +1,25 @@
+{
+  "name": "scorekeeper",
+  "version": "1.0.0",
+  "description": "Record Keeper",
+  "main": "server.js",
+  "dependencies": {
+    "express": "^4.15.2",
+    "pg": "^6.1.5"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/carloscadena/scoreKeeper.git"
+  },
+  "author": "Carlos Cadena and W. Ely Paysinger",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/carloscadena/scoreKeeper/issues"
+  },
+  "homepage": "https://github.com/carloscadena/scoreKeeper#readme"
+}
