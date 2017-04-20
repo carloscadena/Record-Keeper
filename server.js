@@ -17,6 +17,8 @@ client.on('error', function(error) {
 // app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static('./public'));
 
+app.get('/', (request, response) => response.sendFile('index.html', {root: '.'}));
+
 app.listen(PORT, () => console.log(`Server started on port ${PORT}!`));
 
 function loadUsers() {
