@@ -1,0 +1,8 @@
+**/*/vendor/
+/*global*/
+/*global
+*Controller,
+*View,
+page
+Handlebars
+*/
