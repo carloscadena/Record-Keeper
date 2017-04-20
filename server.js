@@ -23,8 +23,8 @@ function loadUsers() {
   fs.readFile('./public/data/table.json', (err, fd) => {
     JSON.parse(fd.toString()).forEach(ele => {
       client.query(
-        'INSERT INTO users(user, groups) VALUES($1, $2) ON CONFLICT DO NOTHING',
-        [ele.user, ele.groups]
+        'INSERT INTO users(user_name, groups, wins, games_played) VALUES($1, $2, $3, $4) ON CONFLICT DO NOTHING',
+        [ele.user, ele.groups, ele.wins, ele.games_played]
       )
       .catch(console.error);
       // client.query(
@@ -41,8 +41,8 @@ function loadDB() {
     users (
       user_id SERIAL PRIMARY KEY,
       user_name VARCHAR(50),
-      wins INT,
       groups TEXT[],
+      wins INT,
       games_played INT
     );`
   )
