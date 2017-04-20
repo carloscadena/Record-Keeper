@@ -1,6 +1,31 @@
 'use strict;'
 
-console.log('Test');
+class Navbar extends React.Component {
+  render() {
+    return (
+      <header>
+        <nav class="nav">
+          <div data-page="home" class=""><a href="/">Score Keeper</a></div>
+          <div class="">
+            <div class=""></div>
+            <ul>
+              <Groups />
+              <li data-page="about"><a href="/about">About</a></li>
+            </ul>
+          </div>
+        </nav>
+      </header>
+    );
+  }
+}
+
+class Groups extends React.Component {
+  render() {
+    return (
+      <li ><a href="#group">Groups</a></li>
+    );
+  }
+}
 
 class Clock extends React.Component {
   constructor(props) {
@@ -35,7 +60,18 @@ class Clock extends React.Component {
   }
 }
 
+class Page extends React.Component {
+  render() {
+    return (
+      <div>
+        <Navbar />
+        <Clock />
+      </div>
+    );
+  }
+}
+
 ReactDOM.render(
-  <Clock />,
+  <Page />,
   document.getElementById('root')
 );
