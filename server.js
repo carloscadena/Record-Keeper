@@ -27,17 +27,16 @@ function loadUsers() {
         [ele.user, ele.groups, ele.wins, ele.games_played]
       )
       .catch(console.error);
-      // client.query(
-      //   'ALTER TABLE users ADD VALUES($1)',
-      //   [ele.user]
-      // )
-      // .catch(console.error);
+      client.query(
+        `ALTER TABLE users ADD ${ele.user} INT`
+      )
+      .catch(console.error);
     })
   })
 }
 function loadDB() {
-  client.query(`
-    CREATE TABLE IF NOT EXISTS
+  client.query(
+    `CREATE TABLE IF NOT EXISTS
     users (
       user_id SERIAL PRIMARY KEY,
       user_name VARCHAR(50),
