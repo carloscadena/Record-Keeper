@@ -1,1 +1,11 @@
-[{"user": "Ely", "groups": ["CodeFellows", "Google"]}, {"user": "Carlos", "groups": ["CodeFellows", "Microsoft"]}]
+[{
+  "user": "Ely",
+  "groups": ["CodeFellows", "Google"],
+  "games_played": 0,
+  "wins": 0
+},{
+  "user": "Carlos",
+  "groups": ["CodeFellows", "Microsoft"],
+  "games_played": 0,
+  "wins": 0
+}]
