@@ -33,8 +33,8 @@ function loadUsers() {
         `ALTER TABLE users ADD ${ele.user} INT`
       )
       .catch(console.error);
-    })
-  })
+    });
+  });
 }
 function loadDB() {
   client.query(
