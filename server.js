@@ -25,14 +25,15 @@ function loadUsers() {
   fs.readFile('./public/data/table.json', (err, fd) => {
     JSON.parse(fd.toString()).forEach(ele => {
       client.query(
-        'INSERT INTO users(user_name, groups, wins, games_played) VALUES($1, $2, $3, $4) ON CONFLICT DO NOTHING',
+        `INSERT INTO users(user_name, groups, wins, games_played) VALUES($1, $2, $3, $4) ON CONFLICT DO NOTHING`,
         [ele.user, ele.groups, ele.wins, ele.games_played]
       )
       .catch(console.error);
       client.query(
-        `ALTER TABLE users ADD ${ele.user} INT`
+        `ALTER TABLE users ADD ${ele.user} INT
+          DEFAULT 0`
       )
-      .catch(console.error);
+      .catch(function(error){return}); //choosing to drop this error, because frustration.
     });
   });
 }
@@ -41,7 +42,7 @@ function loadDB() {
     `CREATE TABLE IF NOT EXISTS
     users (
       user_id SERIAL PRIMARY KEY,
-      user_name VARCHAR(50),
+      user_name VARCHAR(50) UNIQUE NOT NULL,
       groups TEXT[],
       wins INT,
       games_played INT
