@@ -64,7 +64,7 @@ class Page extends React.Component {
   render() {
     return (
       <div>
-        <MenuExample items={ ['Home', 'Services', 'About', 'Contact us'] } />
+        <MenuExample items={ ['CF', 'Goole', 'Microsoft'] } />
         <Clock />
       </div>
     );
