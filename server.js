@@ -24,6 +24,20 @@ app.get('/', (request, response) => response.sendFile('index.html', {root: '.'})
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}!`));
 
+
+
+app.post('/userchangescore', (request, response) => {
+  client.query(
+    'INSERT INTO users(user_name, wins, games_played) VALUES($1, $2, $3) ON CONFLICT DO NOTHING',
+    [request.body.user_name, request.body.wins, request.body.games_played]//no idea if this is right
+  )
+
+  .then(() => response.send('Insert complete'))
+  .catch(console.error);
+});
+
+
+
 function loadUsers() {
   fs.readFile('./public/data/table.json', (err, fd) => {
     JSON.parse(fd.toString()).forEach(ele => {
