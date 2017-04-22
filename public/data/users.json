@@ -1,11 +1,13 @@
 [{
   "user": "Ely",
   "groups": ["CodeFellows", "Google"],
-  "games_played": 0,
-  "wins": 0
+  "games_played": 1,
+  "wins": 0,
+  "losses": 1
 },{
   "user": "Carlos",
   "groups": ["CodeFellows", "Microsoft"],
-  "games_played": 0,
-  "wins": 0
+  "games_played": 1,
+  "wins": 1,
+  "losses": 0
 }]
