@@ -8,6 +8,8 @@ const PORT = process.env.PORT || 3000;
 const app = express();
 const conString = 'postgres://william:test@localhost:5432/kilovolt';
 const client = new pg.Client(conString);
+// let testing = 0;
+
 client.connect();
 client.on('error', function(error) {
   console.error(error);
@@ -18,6 +20,7 @@ client.on('error', function(error) {
 app.use(express.static('./public'));
 
 app.get('/', (request, response) => response.sendFile('index.html', {root: '.'}));
+// app.post('/')
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}!`));
 
@@ -29,11 +32,6 @@ function loadUsers() {
         [ele.user, ele.groups, ele.wins, ele.games_played]
       )
       .catch(console.error);
-      client.query(
-        `ALTER TABLE users ADD ${ele.user} INT
-          DEFAULT 0`
-      )
-      .catch(function(error){return}); //choosing to drop this error, because frustration.
     });
   });
 }
@@ -50,6 +48,7 @@ function loadDB() {
   )
   .then(loadUsers)
   .catch(console.error);
+  // TODO Create new table where games are rows and p1, p2 and date are fields
 }
 
 loadDB();
