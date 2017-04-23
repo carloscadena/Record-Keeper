@@ -1,16 +1,19 @@
 'use strict';
 
-module.exports = {
-  entry: './src/app.js',
+const webpack = require('webpack');
+const path = require('path');
+
+const config = {
+  entry: 'index.js',
   output: {
-    path: './build',
+    path: path.resolve(__dirname, 'build'),
     filename: 'app.bundle.js'
   },
   module: {
-    loaders: [{
-      test: /\.js$/,
-      exclude: /node_modules/,
-      loader: 'babel-loader'
-    }]
+    rules: [
+      {test: /\.(js|jsx)$/, use: 'babel-loader'}
+    ]
   }
 };
+
+module.exports = config;

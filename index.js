@@ -5,8 +5,9 @@ import ReactDOM from 'react-dom';
 import { Router, Route, browserHistory } from 'react-router';
 import 'babel-polyfill';
 import $ from 'jquery';
-import Home from './app/screens/Home';
-import User from './app/screens/User';
+import Home from '/app/screens/Home';
+import User from '/app/screens/User';
+// import formSetUp from 'app';
 
 
 ReactDOM.render(
@@ -16,3 +17,5 @@ ReactDOM.render(
   </Router>,
   document.getElementById('root')
 );
+
+// formSetUp()
