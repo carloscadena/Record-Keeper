@@ -30,8 +30,8 @@ function loadUsers() {
   fs.readFile('./public/data/users.json', (err, fd) => {
     JSON.parse(fd.toString()).forEach(ele => {
       client.query(
-        `INSERT INTO users(user_name, groups, wins, losses, games_played) VALUES($1, $2, $3, $4) ON CONFLICT DO NOTHING`,
-        [ele.user, ele.groups, ele.wins, ele.losses, ele.games_played]
+        `INSERT INTO users(user_name) VALUES($1)`,
+        [ele.user]
       )
       .catch(console.error);
     });
@@ -41,40 +41,32 @@ function loadGames() {
   fs.readFile('./public/data/games.json', (err, fd) => {
     JSON.parse(fd.toString()).forEach(ele => {
       client.query(
-        `INSERT INTO
-            games(winner, loser, winner_score, loser_score)
-            VALUES(SELECT, SELECT, $1, $2)SELECT author_id, $1, $2, $3, $4
-            FROM authors
-            WHERE author=$5;`,
-        [ele.user, ele.groups, ele.wins, ele.games_played]
+        `INSERT INTO games(winner_id, loser_id) VALUES( (SELECT id FROM users WHERE user_name = '${ele.winner}'),
+          (SELECT id FROM users WHERE user_name = '${ele.loser}') );`
       )
       .catch(console.error);
     });
   });
 }
+
 function loadDB() {
   client.query(
     `CREATE TABLE IF NOT EXISTS
     users (
-      user_id SERIAL PRIMARY KEY,
-      user_name VARCHAR(50),
-      groups TEXT[],
-      wins INT,
-      games_played INT
+      id SERIAL PRIMARY KEY,
+      user_name VARCHAR(50)
     );`
   )
   .then(loadUsers)
   .catch(console.error);
-  // TODO Create new table where games are rows and p1, p2 and date are fields
+
   client.query(`
     CREATE TABLE IF NOT EXISTS
     games (
-      game_id SERIAL PRIMARY KEY,
-      winner INTEGER NOT NULL REFERENCES users(user_id),
-      loser INTEGER NOT NULL REFERENCES users(user_id),
-      winner_score INT NOT NULL,
-      loser_score INT NOT NULL,
-      date DATE DEFAULT GETDATE()
+      id SERIAL PRIMARY KEY,
+      winner_id INTEGER NOT NULL REFERENCES users(id),
+      loser_id INTEGER NOT NULL REFERENCES users(id),
+      date DATE DEFAULT NOW()
     );`
   )
   .then(loadGames)
