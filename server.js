@@ -17,7 +17,7 @@ client.on('error', function(error) {
 
 // app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded({extended: true}));
-app.use(express.static('./public'));
+app.use(express.static('./'));
 
 app.get('/', (request, response) => response.sendFile('index.html', {root: '.'}));
 // app.post('/')
@@ -27,7 +27,7 @@ app.listen(PORT, () => console.log(`Server started on port ${PORT}!`));
 
 // ------- SEED database while in development ------ //
 function loadUsers() {
-  fs.readFile('./public/data/users.json', (err, fd) => {
+  fs.readFile('./data/users.json', (err, fd) => {
     JSON.parse(fd.toString()).forEach(ele => {
       client.query(
         `INSERT INTO users(user_name) VALUES($1)`,
@@ -38,7 +38,7 @@ function loadUsers() {
   });
 }
 function loadGames() {
-  fs.readFile('./public/data/games.json', (err, fd) => {
+  fs.readFile('./data/games.json', (err, fd) => {
     JSON.parse(fd.toString()).forEach(ele => {
       client.query(
         `INSERT INTO games(winner_id, loser_id) VALUES( (SELECT id FROM users WHERE user_name = '${ele.winner}'),
