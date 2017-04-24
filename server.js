@@ -3,6 +3,8 @@
 const pg = require('pg');
 const fs = require('fs');
 const express = require('express');
+const cors = require('cors');
+
 //const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 5400;
 const app = express();
@@ -18,15 +20,17 @@ client.on('error', function(error) {
 // app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static('./'));
+app.use(cors());
 
-app.get('/users', (request, response) => {
-  client.query(`SELECT * FROM users;`)
+
+app.get('/groups', (request, response) => {
+  client.query(`SELECT DISTINCT group_name FROM groups;`)
   .then(result => response.send(result.rows))
   .catch(console.error);
 });
 // app.post('/')
 
-app.listen(PORT, () => console.log(`Server started on port ${PORT}!`));
+app.listen(PORT, () => console.log(`CORS-enabled server listening on port ${PORT}!`));
 
 
 // ------- SEED database while in development ------ //
@@ -53,7 +57,22 @@ function loadGames() {
   });
 }
 
+function loadGroups() {
+  fs.readFile('./data/groups.json', (err, fd) => {
+    JSON.parse(fd.toString()).forEach(ele => {
+      client.query(
+        `INSERT INTO groups(group_name, user_id) VALUES( '${ele.group}', (SELECT id FROM users WHERE user_name = '${ele.user}') );`
+      )
+      .catch(console.error);
+    });
+  });
+}
+
 function loadDB() {
+  client.query(
+    `DROP TABLE IF EXISTS groups; DROP TABLE IF EXISTS games; DROP TABLE IF EXISTS users;`
+  )
+
   client.query(
     `CREATE TABLE IF NOT EXISTS
     users (
@@ -74,6 +93,16 @@ function loadDB() {
     );`
   )
   .then(loadGames)
+  .catch(console.error);
+
+  client.query(`
+    CREATE TABLE IF NOT EXISTS
+    groups (
+      user_id INT REFERENCES users(id),
+      group_name VARCHAR(50)
+    );`
+  )
+  .then(loadGroups)
   .catch(console.error);
 }
 

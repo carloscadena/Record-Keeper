@@ -6,19 +6,24 @@ import xhr from 'xhr';
 
 class App extends Component {
   state = {
-    group: ''
+    group: '',
+    players: []
   };
 
   fetchGroup = (evt) => {
     evt.preventDefault();
 
+    let self = this;
     let group = this.state.group;
     xhr({
-      url: 'localhost:5400/users'
-      }, function (err, data) {
-        /* Called when the request is finished */
-        console.log('fetching group!', data.body);
+      url: 'http://localhost:5400/groups'
+    }, function (err, data) {
+      /* Called when the request is finished */
+      // console.log('fetching group!', data.body);
+      self.setState({
+        players: JSON.parse(data.body)
       });
+    });
   };
 
   changeGroup = (evt) => {
@@ -28,6 +33,8 @@ class App extends Component {
   };
 
   render() {
+    let currentGroup = 'not loaded yet';
+    currentGroup = this.state.players;
     return (
       <div>
         <h2>Welcome to Score Keep</h2>
@@ -41,6 +48,9 @@ class App extends Component {
             />
           </label>
         </form>
+        <p className="group-wrapper">
+         <span className="group">{ console.log(currentGroup) }</span>
+       </p>
       </div>
     );
   }

@@ -1,1 +1,13 @@
-["CF", "GOOG", "MICRO"]
+[{
+  "user":"Ely",
+  "group":"CF"
+},{
+  "user":"Carlos",
+  "group":"CF"
+},{
+  "user":"Ely",
+  "group":"Goog"
+},{
+  "user":"Ely",
+  "group":"Goog"
+}]
