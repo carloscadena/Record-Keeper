@@ -4,7 +4,7 @@ const pg = require('pg');
 const fs = require('fs');
 const express = require('express');
 //const bodyParser = require('body-parser');
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5400;
 const app = express();
 const conString = 'postgres://william:test@localhost:5432/kilovolt';
 const client = new pg.Client(conString);
@@ -17,38 +17,64 @@ client.on('error', function(error) {
 
 // app.use(bodyParser.json());
 // app.use(bodyParser.urlencoded({extended: true}));
-app.use(express.static('./public'));
+app.use(express.static('./'));
 
-app.get('/', (request, response) => response.sendFile('index.html', {root: '.'}));
+app.get('/users', (request, response) => {
+  client.query(`SELECT * FROM users;`)
+  .then(result => response.send(result.rows))
+  .catch(console.error);
+});
 // app.post('/')
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}!`));
 
+
+// ------- SEED database while in development ------ //
 function loadUsers() {
-  fs.readFile('./public/data/table.json', (err, fd) => {
+  fs.readFile('./data/users.json', (err, fd) => {
     JSON.parse(fd.toString()).forEach(ele => {
       client.query(
-        `INSERT INTO users(user_name, groups, wins, games_played) VALUES($1, $2, $3, $4) ON CONFLICT DO NOTHING`,
-        [ele.user, ele.groups, ele.wins, ele.games_played]
+        `INSERT INTO users(user_name) VALUES($1)`,
+        [ele.user]
       )
       .catch(console.error);
     });
   });
 }
+function loadGames() {
+  fs.readFile('./data/games.json', (err, fd) => {
+    JSON.parse(fd.toString()).forEach(ele => {
+      client.query(
+        `INSERT INTO games(winner_id, loser_id) VALUES( (SELECT id FROM users WHERE user_name = '${ele.winner}'),
+          (SELECT id FROM users WHERE user_name = '${ele.loser}') );`
+      )
+      .catch(console.error);
+    });
+  });
+}
+
 function loadDB() {
   client.query(
     `CREATE TABLE IF NOT EXISTS
     users (
-      user_id SERIAL PRIMARY KEY,
-      user_name VARCHAR(50) UNIQUE NOT NULL,
-      groups TEXT[],
-      wins INT,
-      games_played INT
+      id SERIAL PRIMARY KEY,
+      user_name VARCHAR(50)
     );`
   )
   .then(loadUsers)
   .catch(console.error);
-  // TODO Create new table where games are rows and p1, p2 and date are fields
+
+  client.query(`
+    CREATE TABLE IF NOT EXISTS
+    games (
+      id SERIAL PRIMARY KEY,
+      winner_id INTEGER NOT NULL REFERENCES users(id),
+      loser_id INTEGER NOT NULL REFERENCES users(id),
+      date DATE DEFAULT NOW()
+    );`
+  )
+  .then(loadGames)
+  .catch(console.error);
 }
 
 loadDB();
