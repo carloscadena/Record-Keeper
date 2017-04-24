@@ -19,15 +19,11 @@ client.on('error', function(error) {
 // app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static('./'));
 
-// app.get('/group', (request, response) => {
-//   client.query(`
-//     SELECT * FROM groups
-//     INNER JOIN authors
-//       ON articles.author_id=authors.author_id;`
-//   )
-//   .then(result => response.send(result.rows))
-//   .catch(console.error);
-// });
+app.get('/users', (request, response) => {
+  client.query(`SELECT * FROM users;`)
+  .then(result => response.send(result.rows))
+  .catch(console.error);
+});
 // app.post('/')
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}!`));
