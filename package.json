@@ -6,7 +6,8 @@
     "express": "^4.15.2",
     "pg": "^6.1.5",
     "react": "^15.5.4",
-    "react-dom": "^15.5.4"
+    "react-dom": "^15.5.4",
+    "xhr": "^2.4.0"
   },
   "devDependencies": {
     "react-scripts": "0.9.5"

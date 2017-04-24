@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 // import logo from './logo.svg';
 // import './App.css';
+import xhr from 'xhr';
+
 
 class App extends Component {
   state = {
@@ -9,7 +11,14 @@ class App extends Component {
 
   fetchGroup = (evt) => {
     evt.preventDefault();
-    console.log('fetching group!', this.state.group);
+
+    let group = this.state.group;
+    xhr({
+      url: 'localhost:5400/users'
+      }, function (err, data) {
+        /* Called when the request is finished */
+        console.log('fetching group!', data.body);
+      });
   };
 
   changeGroup = (evt) => {
