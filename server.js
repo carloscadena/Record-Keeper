@@ -20,14 +20,14 @@ app.use(express.static('./'));
 app.use(cors());
 
 
-app.get('/groups', (request, response) => {
+app.get('/groups/:id', (request, response) => {
   client.query(`SELECT DISTINCT group_name FROM groups;`)
   .then(result => response.send(result.rows))
   .catch(console.error);
 });
 
-app.get('/players', (request, response) => {
-  client.query(`SELECT user_name FROM users;`)
+app.get('/players/:group/:currentUser', (request, response) => {
+  client.query(`SELECT user_name, id FROM users WHERE id IN (SELECT user_id FROM groups WHERE group_name = '${request.params.group}') AND id <> ${request.params.currentUser} `)
   .then(result => response.send(result.rows))
   .catch(console.error);
 });

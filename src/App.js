@@ -9,18 +9,19 @@ class App extends Component {
   state = {
     group: 'CF',
     groups: [],
-    players: []
+    players: [],
+    myId: 1
   };
 
   componentDidMount() {
-    this.fetchGroups();
+    this.fetchGroups(this.state.myId);
   }
 
-  fetchPlayers = (evt) => {
+  fetchPlayers = (group) => {
     // evt.preventDefault();
     let self = this;
     xhr({
-      url: 'http://localhost:5400/players'
+      url: `http://localhost:5400/players/${group}/${this.state.myId}`
     }, function (err, data) {
       self.setState({
         players: JSON.parse(data.body).map(ele => ele.user_name)
@@ -31,7 +32,7 @@ class App extends Component {
   fetchGroups = () => {
     let self = this;
     xhr({
-      url: 'http://localhost:5400/groups'
+      url: `http://localhost:5400/groups/1`
     }, function (err, data) {
       self.setState({
         groups: JSON.parse(data.body).map(ele => ele.group_name)
@@ -39,15 +40,7 @@ class App extends Component {
     });
   };
 
-  changeGroup = (evt) => {
-    this.setState({
-      group: evt.target.value
-    });
-  };
-
   render() {
-    let currentGroup = 'not loaded yet';
-    currentGroup = this.state.players;
     return (
       <div>
         <Groups
@@ -55,16 +48,6 @@ class App extends Component {
           items={ this.state.groups }
         />
         <h2>Welcome to Score Keep</h2>
-        <form onSubmit={this.fetchPlayers}>
-          <label>test form
-            <input
-              placeholder={"test"}
-              type="text"
-              value={this.state.group}
-              onChange={this.changeGroup}
-            />
-          </label>
-        </form>
         <div className="players-wrapper">
           <Players items={this.state.players} />
         </div>
