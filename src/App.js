@@ -1,41 +1,40 @@
 import React, { Component } from 'react';
 // import logo from './logo.svg';
-// import './App.css';
+import './App.css';
 import xhr from 'xhr';
 import Groups from './screens/User/components/Groups';
-
+import Players from './screens/User/components/Players';
 
 class App extends Component {
   state = {
-    group: '',
+    group: 'CF',
     groups: [],
     players: []
   };
 
-  fetchPlayers = (evt) => {
-    evt.preventDefault();
+  componentDidMount() {
+    this.fetchGroups();
+  }
 
+  fetchPlayers = (evt) => {
+    // evt.preventDefault();
     let self = this;
-    let group = this.state.group;
     xhr({
-      url: 'http://localhost:5400/groups'
+      url: 'http://localhost:5400/players'
     }, function (err, data) {
       self.setState({
-        players: JSON.parse(data.body)
+        players: JSON.parse(data.body).map(ele => ele.user_name)
       });
     });
   };
 
-  fetchGroups = (evt) => {
-    evt.preventDefault();
-
+  fetchGroups = () => {
     let self = this;
-    let group = this.state.group;
     xhr({
       url: 'http://localhost:5400/groups'
     }, function (err, data) {
       self.setState({
-        players: JSON.parse(data.body)
+        groups: JSON.parse(data.body).map(ele => ele.group_name)
       });
     });
   };
@@ -51,7 +50,10 @@ class App extends Component {
     currentGroup = this.state.players;
     return (
       <div>
-        <Groups items={ ["goog", "CF"] }/>
+        <Groups
+          select={ this.fetchPlayers }
+          items={ this.state.groups }
+        />
         <h2>Welcome to Score Keep</h2>
         <form onSubmit={this.fetchPlayers}>
           <label>test form
@@ -63,9 +65,9 @@ class App extends Component {
             />
           </label>
         </form>
-        <p className="group-wrapper">
-         <span className="group">{ console.log(currentGroup) }</span>
-       </p>
+        <div className="players-wrapper">
+          <Players items={this.state.players} />
+        </div>
       </div>
     );
   }
