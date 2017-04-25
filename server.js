@@ -10,24 +10,28 @@ const PORT = process.env.PORT || 5400;
 const app = express();
 const conString = 'postgres://william:test@localhost:5432/kilovolt';
 const client = new pg.Client(conString);
-// let testing = 0;
 
 client.connect();
 client.on('error', function(error) {
   console.error(error);
 });
 
-// app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static('./'));
 app.use(cors());
 
 
-app.get('/groups', (request, response) => {
+app.get('/groups/:id', (request, response) => {
   client.query(`SELECT DISTINCT group_name FROM groups;`)
   .then(result => response.send(result.rows))
   .catch(console.error);
 });
+
+app.get('/players/:group/:currentUser', (request, response) => {
+  client.query(`SELECT user_name, id FROM users WHERE id IN (SELECT user_id FROM groups WHERE group_name = '${request.params.group}') AND id <> ${request.params.currentUser} `)
+  .then(result => response.send(result.rows))
+  .catch(console.error);
+});
+
 // app.post('/')
 
 app.listen(PORT, () => console.log(`CORS-enabled server listening on port ${PORT}!`));
