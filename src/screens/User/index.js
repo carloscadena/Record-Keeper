@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
-// import logo from './logo.svg';
-import './App.css';
 import xhr from 'xhr';
-import Groups from './screens/User/components/Groups';
-import Players from './screens/User/components/Players';
+import Groups from './components/Groups';
+import Players from './components/Players';
+import './App.css';
 
-class App extends Component {
+
+class User extends Component {
   state = {
-    group: 'CF',
+    group: '',
     groups: [],
     players: [],
     myId: 1
@@ -29,10 +29,10 @@ class App extends Component {
     });
   };
 
-  fetchGroups = () => {
+  fetchGroups = (id) => {
     let self = this;
     xhr({
-      url: `http://localhost:5400/groups/1`
+      url: `http://localhost:5400/groups/${id}`
     }, function (err, data) {
       self.setState({
         groups: JSON.parse(data.body).map(ele => ele.group_name)
@@ -56,4 +56,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default User;

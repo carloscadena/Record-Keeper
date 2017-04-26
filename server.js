@@ -28,7 +28,10 @@ app.get('/groups/:id', (request, response) => {
 
 app.get('/players/:group/:currentUser', (request, response) => {
   client.query(`SELECT user_name, id FROM users WHERE id IN (SELECT user_id FROM groups WHERE group_name = '${request.params.group}') AND id <> ${request.params.currentUser} `)
-  .then(result => response.send(result.rows))
+  .then(result => {
+    console.log(result.rows);
+    response.send(result.rows);
+  })
   .catch(console.error);
 });
 
