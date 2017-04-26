@@ -6,12 +6,14 @@ export default class Players extends React.Component {
   }
   render() {
     return (
-      <div>
-        <ul>{ this.props.items.map(
-          function(ele, index){
-            return <li key={index.toString()}>{ele.user_name}</li>;
-          }) }
-        </ul>
+      <div>{ this.props.items.map(
+        function(ele, index){
+          return <div id={ele.id} key={index.toString()}>
+            <span className="name">{ele.user_name}</span>
+            <span className="wins">Wins {ele.wins}</span>
+            <span className="losses">Losses {ele.losses}</span>
+          </div>;
+        }) }
       </div>
     );
   }
