@@ -8,7 +8,8 @@ const cors = require('cors');
 //const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 5400;
 const app = express();
-const conString = 'postgres://william:test@localhost:5432/kilovolt';
+//const conString = 'postgres://william:test@localhost:5432/kilovolt';
+const conString = 'postgres://localhost:5432';
 const client = new pg.Client(conString);
 
 client.connect();
