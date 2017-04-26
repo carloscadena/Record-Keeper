@@ -8,7 +8,7 @@ const cors = require('cors');
 //const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 5400;
 const app = express();
-const conString = 'postgres://william:test@localhost:5432/kilovolt';
+const conString = 'postgres://localhost:5432';
 const client = new pg.Client(conString);
 
 client.connect();
@@ -32,7 +32,19 @@ app.get('/players/:group/:currentUser', (request, response) => {
   .catch(console.error);
 });
 
-// app.post('/')
+SELECT users.id, user_name, winner_id, loser_id FROM users LEFT JOIN games ON users.id = games.winner_id;
+
+SELECT count(id) FROM GAMES WHERE loser_id=1 and winner_id=2 UNION ALL SELECT COUNT(id) FROM GAMES WHERE loser_id=2 AND winner_id=1;
+
+SELECT id, user_name, (SELECT count(id) AS wins FROM GAMES WHERE loser_id=1 and winner_id=2), (SELECT count(id) AS losses FROM GAMES WHERE loser_id=2 and winner_id=1) FROM users WHERE id IN (SELECT user_id FROM groups WHERE group_name = 'CF') AND id <> 2;
+
+app.post('/game', (request, response) => {
+  client.query(
+    `INSERT INTO GAMES(winner_id, loser_id) VALUES (${request.body.winner}, ${request.body.loser});`
+  )
+  .then(() => response.send('Insert complete'))
+  .catch(console.error);
+})
 
 app.listen(PORT, () => console.log(`CORS-enabled server listening on port ${PORT}!`));
 
