@@ -9,7 +9,7 @@ export default class Players extends React.Component {
       <div>
         <ul>{ this.props.items.map(
           function(ele, index){
-            return <li key={index.toString()}>{ele}</li>;
+            return <li key={index.toString()}>{ele.user_name}</li>;
           }) }
         </ul>
       </div>
