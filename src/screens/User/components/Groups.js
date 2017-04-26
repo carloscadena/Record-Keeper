@@ -9,12 +9,21 @@ export default class Groups extends React.Component {
       focused: 0
     };
   }
+  shouldComponentUpdate(nextProps, nextState) {
+    if (this.props.items == nextProps.items && this.state == nextState) {
+      return false;
+    }
+    return true;
+  }
+  componentDidUpdate() {
+    this.props.select(this.props.items[this.state.focused])
+  }
   clicked(index){
     this.setState({focused: index});
+    this.props.select(this.props.items[this.state.focused]);
   }
   render() {
     let self = this;
-    this.props.select(this.props.items[self.state.focused]);
     return (
       <div>
         <ul>{ this.props.items.map(
