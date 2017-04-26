@@ -29,11 +29,23 @@ app.get('/groups/:id', (request, response) => {
 app.get('/players/:group/:currentUser', (request, response) => {
   client.query(`SELECT user_name, id FROM users WHERE id IN (SELECT user_id FROM groups WHERE group_name = '${request.params.group}') AND id <> ${request.params.currentUser} `)
   .then(result => {
-    console.log(result.rows);
+    let players = [];
+    result.rows.forEach( ele => {
+      client.query(`SELECT id, user_name, (SELECT count(id) AS wins FROM GAMES WHERE loser_id=${request.params.currentUser} and winner_id=${ele.id}), (SELECT count(id) AS losses FROM GAMES WHERE loser_id=${ele.id} and winner_id=${request.params.currentUser}) FROM users WHERE id=${ele.id};`)
+      .then(result => {
+        players.push(result.rows);
+      });
+    });
+    console.log('Players', players);
     response.send(result.rows);
   })
   .catch(console.error);
 });
+// SELECT users.id, user_name, winner_id, loser_id FROM users LEFT JOIN games ON users.id = games.winner_id;
+//
+// SELECT count(id) FROM GAMES WHERE loser_id=1 and winner_id=2 UNION ALL SELECT COUNT(id) FROM GAMES WHERE loser_id=2 AND winner_id=1;
+//
+// SELECT id, user_name, (SELECT count(id) AS wins FROM GAMES WHERE loser_id=1 and winner_id=2), (SELECT count(id) AS losses FROM GAMES WHERE loser_id=2 and winner_id=1) FROM users WHERE id IN (SELECT user_id FROM groups WHERE group_name = 'CF') AND id <> 2;
 
 // app.post('/')
 
