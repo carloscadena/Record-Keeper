@@ -4,8 +4,7 @@ const pg = require('pg');
 const fs = require('fs');
 const express = require('express');
 const cors = require('cors');
-
-//const bodyParser = require('body-parser');
+// const bodyParser = require('body-parser');
 const PORT = process.env.PORT || 5400;
 const app = express();
 //const conString = 'postgres://william:test@localhost:5432/kilovolt';
@@ -17,7 +16,10 @@ client.on('error', function(error) {
   console.error(error);
 });
 
+
 app.use(express.static('./'));
+// app.use(bodyParser.json());
+// app.use(bodyParser.urlencoded({extended: true}));
 app.use(cors());
 
 
@@ -31,29 +33,32 @@ app.get('/players/:group/:currentUser', (request, response) => {
   client.query(`SELECT user_name, id FROM users WHERE id IN (SELECT user_id FROM groups WHERE group_name = '${request.params.group}') AND id <> ${request.params.currentUser} `)
   .then(result => {
     let players = [];
-    result.rows.forEach( ele => {
+    function asyncDataBaseCall(ele, callback){
       client.query(`SELECT id, user_name, (SELECT count(id) AS wins FROM GAMES WHERE loser_id=${request.params.currentUser} and winner_id=${ele.id}), (SELECT count(id) AS losses FROM GAMES WHERE loser_id=${ele.id} and winner_id=${request.params.currentUser}) FROM users WHERE id=${ele.id};`)
       .then(result => {
-        players.push(result.rows);
+        players.push(result.rows[0]);
+        console.log(result.rows)
+        callback();
+      });
+    }
+    let queries = result.rows.map( ele => {
+      return new Promise( resolve => {
+        asyncDataBaseCall(ele, resolve)
       });
     });
-    console.log('Players', players);
-    response.send(result.rows);
+    Promise.all(queries).then(() => {
+      response.send(players);
+    });
   })
   .catch(console.error);
 });
-// SELECT users.id, user_name, winner_id, loser_id FROM users LEFT JOIN games ON users.id = games.winner_id;
-//
-// SELECT count(id) FROM GAMES WHERE loser_id=1 and winner_id=2 UNION ALL SELECT COUNT(id) FROM GAMES WHERE loser_id=2 AND winner_id=1;
-//
-// SELECT id, user_name, (SELECT count(id) AS wins FROM GAMES WHERE loser_id=1 and winner_id=2), (SELECT count(id) AS losses FROM GAMES WHERE loser_id=2 and winner_id=1) FROM users WHERE id IN (SELECT user_id FROM groups WHERE group_name = 'CF') AND id <> 2;
-
 // app.post('/')
 
 app.listen(PORT, () => console.log(`CORS-enabled server listening on port ${PORT}!`));
 
-
+// --------------------------------------------------//
 // ------- SEED database while in development ------ //
+// --------------------------------------------------//
 function loadUsers() {
   fs.readFile('./data/users.json', (err, fd) => {
     JSON.parse(fd.toString()).forEach(ele => {

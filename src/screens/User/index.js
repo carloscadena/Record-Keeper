@@ -7,7 +7,6 @@ import './App.css';
 
 class User extends Component {
   state = {
-    group: '',
     groups: [],
     players: [],
     myId: 1
@@ -24,7 +23,7 @@ class User extends Component {
       url: `http://localhost:5400/players/${group}/${this.state.myId}`
     }, function (err, data) {
       self.setState({
-        players: JSON.parse(data.body).map(ele => ele.user_name)
+        players: JSON.parse(data.body)
       });
     });
   };
@@ -41,6 +40,7 @@ class User extends Component {
   };
 
   render() {
+    console.log(this.state.players);
     return (
       <div>
         <Groups

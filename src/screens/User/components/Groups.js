@@ -20,7 +20,6 @@ export default class Groups extends React.Component {
   }
   clicked(index){
     this.setState({focused: index});
-    this.props.select(this.props.items[this.state.focused]);
   }
   render() {
     let self = this;
