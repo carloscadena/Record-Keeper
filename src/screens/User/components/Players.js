@@ -7,15 +7,15 @@ export default class Players extends React.Component {
       focused: ''
     }
   }
-  clicked(id){
-    this.setState({focused: id});
+  updateOpponent (user_data) {
+    this.props.select(user_data);
   }
   render() {
     let self = this;
     return (
       <div>{ this.props.players.map(
         function(ele){
-          return <div id={ele.id} key={ele.id.toString()} onClick={self.clicked.bind(self, ele.id)}>
+          return <div id={ele.id} key={ele.id.toString()} onClick={self.updateOpponent.bind(self, {name: ele.user_name, id: ele.id})}>
               <span className="name">{ele.user_name}</span>
               <span className="wins">Wins {ele.wins}</span>
               <span className="losses">Losses {ele.losses}</span>

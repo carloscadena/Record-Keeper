@@ -20,6 +20,10 @@ class User extends Component {
     this.fetchGroups(this.state.myId);
   }
 
+  pickOpponent = (opponent_data) => {
+    this.setState({ opponentId: opponent_data.id, opponentName: opponent_data.name });
+  }
+
   fetchPlayers = (group) => {
     // evt.preventDefault();
     let self = this;
@@ -53,7 +57,7 @@ class User extends Component {
         />
         <h2>Welcome to Score Keep</h2>
         <div className="players-wrapper">
-          <Players players={this.state.players} />
+          <Players players={this.state.players} select={this.pickOpponent} />
           <Opponent opponent={this.state.opponentId} name={this.state.opponentName} />
         </div>
       </div>
