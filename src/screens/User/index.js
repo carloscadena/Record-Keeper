@@ -2,11 +2,15 @@ import React, { Component } from 'react';
 import xhr from 'xhr';
 import Groups from './components/Groups';
 import Players from './components/Players';
+import Opponent from './components/Opponent';
+
 import './App.css';
 
 
 class User extends Component {
   state = {
+    opponentId: 1,
+    opponentName: 'test',
     groups: [],
     players: [],
     myId: 1
@@ -14,6 +18,10 @@ class User extends Component {
 
   componentDidMount() {
     this.fetchGroups(this.state.myId);
+  }
+
+  pickOpponent = (opponent_data) => {
+    this.setState({ opponentId: opponent_data.id, opponentName: opponent_data.name });
   }
 
   fetchPlayers = (group) => {
@@ -45,11 +53,12 @@ class User extends Component {
       <div>
         <Groups
           select={ this.fetchPlayers }
-          items={ this.state.groups }
+          groups={ this.state.groups }
         />
         <h2>Welcome to Score Keep</h2>
         <div className="players-wrapper">
-          <Players items={this.state.players} />
+          <Players players={this.state.players} select={this.pickOpponent} />
+          <Opponent opponent={this.state.opponentId} name={this.state.opponentName} />
         </div>
       </div>
     );

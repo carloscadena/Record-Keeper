@@ -10,13 +10,13 @@ export default class Groups extends React.Component {
     };
   }
   shouldComponentUpdate(nextProps, nextState) {
-    if (this.props.items == nextProps.items && this.state == nextState) {
+    if (this.props.groups == nextProps.groups && this.state == nextState) {
       return false;
     }
     return true;
   }
   componentDidUpdate() {
-    this.props.select(this.props.items[this.state.focused])
+    this.props.select(this.props.groups[this.state.focused])
   }
   clicked(index){
     this.setState({focused: index});
@@ -25,7 +25,7 @@ export default class Groups extends React.Component {
     let self = this;
     return (
       <div>
-        <ul>{ this.props.items.map(
+        <ul>{ this.props.groups.map(
           function(m, index){
             let style = '';
             if(self.state.focused == index){
@@ -43,7 +43,7 @@ export default class Groups extends React.Component {
             );
           }) }
         </ul>
-        <p>Selected: {this.props.items[this.state.focused]}</p>
+        <p>Selected: {this.props.groups[this.state.focused]}</p>
       </div>
     );
   }
