@@ -40,6 +40,7 @@ class App extends Component {
   };
 
   fetchGroups(id){
+    console.log('fetching groups...')
     let self = this;
     xhr({
       url: `http://localhost:5400/groups/${id}`

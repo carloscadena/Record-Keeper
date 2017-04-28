@@ -6,7 +6,6 @@ import { Route, BrowserRouter as Router } from 'react-router-dom';
 import { App } from './components/App';
 import { Login } from './components/Login';
 
-
 const AppClient = () => (
   <Router>
     <div>
@@ -16,4 +15,6 @@ const AppClient = () => (
   </Router>
 )
 
-render(<AppClient />, document.getElementById('root'));
+window.onload = () => {
+  render(<AppClient />, document.getElementById('root'));
+};

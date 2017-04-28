@@ -24,30 +24,14 @@ client.connect();
 client.on('error', function(error) {
   console.error(error);
 });
-
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, 'views'));
+//
+// app.set('view engine', 'ejs');
+// app.set('views', path.join(__dirname, 'views'));
 
 app.use(Express.static(path.join(__dirname, 'build')));
 app.use(cors());
 
-app.get('/', (req, res) => {
-  let markup = '';
-  let status = 200;
-  if (process.env.UNIVERSAL) {
-    const context = {};
-    markup = renderToString(
-      <Router location={req.url} context={context}>
-        <div>
-          <Route exact path="/" component={Login}/>
-          <Route path="/user" component={App}/>
-        </div>
-      </Router>
-    );
-  }
-  return res.status(status).render('index', { markup });
-});
-
+app.get('/', (request, response) => response.sendFile('index.html', {root: '.'}));
 
 app.get('/groups/:id', (request, response) => {
   client.query(`SELECT DISTINCT group_name FROM groups;`)
@@ -79,8 +63,7 @@ app.get('/players/:group/:currentUser', (request, response) => {
   .catch(console.error);
 });
 // app.post('/')
-console.log("The current working directory is " + process.cwd());
-console.log("Server located in " + __dirname);
+
 app.listen(PORT, () => console.log(`CORS-enabled server listening on port ${PORT}!`));
 
 // --------------------------------------------------//
