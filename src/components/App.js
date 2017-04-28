@@ -3,11 +3,11 @@ import xhr from 'xhr';
 import Groups from './components/Groups';
 import Players from './components/Players';
 import Opponent from './components/Opponent';
-
+import './index.css';
 import './App.css';
 
 
-class User extends Component {
+class App extends Component {
   state = {
     opponentId: 1,
     opponentName: 'test',
@@ -65,4 +65,4 @@ class User extends Component {
   }
 }
 
-export default User;
+export default App;
