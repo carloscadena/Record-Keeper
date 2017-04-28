@@ -7,7 +7,7 @@ export default class Opponent extends React.Component {
       selected: ''
     }
   }
-  clicked = (winLoss) => {
+  clicked(winLoss){
     setState({selected: winLoss})
   }
   render() {

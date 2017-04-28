@@ -1,4 +1,13 @@
 'use strict';
+import path from 'path';
+import Express from 'express';
+import React from 'react';
+import { renderToString } from 'react-dom/server';
+import { Route, StaticRouter as Router } from 'react-router-dom';
+import { App } from './components/App';
+import { Login } from './components/Login';
+
+
 
 const pg = require('pg');
 const fs = require('fs');
@@ -16,11 +25,28 @@ client.on('error', function(error) {
   console.error(error);
 });
 
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
-app.use(express.static('./'));
-// app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({extended: true}));
+app.use(Express.static(path.join(__dirname, 'build')));
 app.use(cors());
+
+app.get('/', (req, res) => {
+  let markup = '';
+  let status = 200;
+  if (process.env.UNIVERSAL) {
+    const context = {};
+    markup = renderToString(
+      <Router location={req.url} context={context}>
+        <div>
+          <Route exact path="/" component={Login}/>
+          <Route path="/user" component={App}/>
+        </div>
+      </Router>
+    );
+  }
+  return res.status(status).render('index', { markup });
+});
 
 
 app.get('/groups/:id', (request, response) => {
@@ -53,14 +79,15 @@ app.get('/players/:group/:currentUser', (request, response) => {
   .catch(console.error);
 });
 // app.post('/')
-
+console.log("The current working directory is " + process.cwd());
+console.log("Server located in " + __dirname);
 app.listen(PORT, () => console.log(`CORS-enabled server listening on port ${PORT}!`));
 
 // --------------------------------------------------//
 // ------- SEED database while in development ------ //
 // --------------------------------------------------//
 function loadUsers() {
-  fs.readFile('./data/users.json', (err, fd) => {
+  fs.readFile('./src/data/users.json', (err, fd) => {
     JSON.parse(fd.toString()).forEach(ele => {
       client.query(
         `INSERT INTO users(user_name) VALUES($1)`,
@@ -71,7 +98,7 @@ function loadUsers() {
   });
 }
 function loadGames() {
-  fs.readFile('./data/games.json', (err, fd) => {
+  fs.readFile('./src/data/games.json', (err, fd) => {
     JSON.parse(fd.toString()).forEach(ele => {
       client.query(
         `INSERT INTO games(winner_id, loser_id) VALUES( (SELECT id FROM users WHERE user_name = '${ele.winner}'),
@@ -83,7 +110,7 @@ function loadGames() {
 }
 
 function loadGroups() {
-  fs.readFile('./data/groups.json', (err, fd) => {
+  fs.readFile('./src/data/groups.json', (err, fd) => {
     JSON.parse(fd.toString()).forEach(ele => {
       client.query(
         `INSERT INTO groups(group_name, user_id) VALUES( '${ele.group}', (SELECT id FROM users WHERE user_name = '${ele.user}') );`

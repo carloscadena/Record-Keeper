@@ -1,30 +1,33 @@
 import React, { Component } from 'react';
 import xhr from 'xhr';
-import Groups from './components/Groups';
-import Players from './components/Players';
-import Opponent from './components/Opponent';
-import './index.css';
-import './App.css';
+import Groups from './Groups';
+import Players from './Players';
+import Opponent from './Opponent';
+// import '.././build/index.css';
+// import '.././build/App.css';
 
 
 class App extends Component {
-  state = {
-    opponentId: 1,
-    opponentName: 'test',
-    groups: [],
-    players: [],
-    myId: 1
+  constructor() {
+    super();
+    this.state = {
+      opponentId: 1,
+      opponentName: 'test',
+      groups: [],
+      players: [],
+      myId: 1
+    }
   };
 
   componentDidMount() {
     this.fetchGroups(this.state.myId);
   }
 
-  pickOpponent = (opponent_data) => {
+  pickOpponent(opponent_data){
     this.setState({ opponentId: opponent_data.id, opponentName: opponent_data.name });
   }
 
-  fetchPlayers = (group) => {
+  fetchPlayers(group){
     // evt.preventDefault();
     let self = this;
     xhr({
@@ -36,7 +39,7 @@ class App extends Component {
     });
   };
 
-  fetchGroups = (id) => {
+  fetchGroups(id){
     let self = this;
     xhr({
       url: `http://localhost:5400/groups/${id}`
