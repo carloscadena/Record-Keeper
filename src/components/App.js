@@ -7,7 +7,7 @@ import Opponent from './Opponent';
 // import '.././build/App.css';
 
 
-class App extends Component {
+export default class App extends Component {
   constructor() {
     super();
     this.state = {
@@ -68,5 +68,3 @@ class App extends Component {
     );
   }
 }
-
-export default App;
