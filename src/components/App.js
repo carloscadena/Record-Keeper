@@ -5,7 +5,7 @@ import Players from './Players';
 import Opponent from './Opponent';
 // import '.././build/index.css';
 // import '.././build/App.css';
-
+// const BASE_URL = 'https://api.github.com'
 
 export default class App extends Component {
   constructor() {
@@ -27,12 +27,16 @@ export default class App extends Component {
     this.setState({ opponentId: opponent_data.id, opponentName: opponent_data.name });
   }
 
-  fetchPlayers(group){
+  fetchPlayers(group, myId) {
     // evt.preventDefault();
+    console.log('fetching players...')
     let self = this;
     xhr({
-      url: `http://localhost:5400/players/${group}/${this.state.myId}`
+      url: `http://localhost:5400/players/${group}/${myId}`
     }, function (err, data) {
+      console.log('data', data);
+      console.log('this', this);
+      console.log('self', self)
       self.setState({
         players: JSON.parse(data.body)
       });

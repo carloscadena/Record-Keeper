@@ -16,7 +16,7 @@ export default class Groups extends React.Component {
     return true;
   }
   componentDidUpdate() {
-    this.props.select(this.props.groups[this.state.focused])
+    this.props.select(this.props.groups[this.state.focused], 1)
   }
   clicked(index){
     this.setState({focused: index});
