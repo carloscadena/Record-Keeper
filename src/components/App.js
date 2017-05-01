@@ -74,7 +74,7 @@ export default class App extends Component {
         <h2>Welcome to Score Keep</h2>
         <div className="players-wrapper">
           <Players players={this.state.players} select={this.pickOpponent.bind(this)} />
-          <Opponent opponent={this.state.opponentId} name={this.state.opponentName} select={this.winLoss.bind(this) }/>
+          <Opponent opponent={this.state.opponentId} selected={this.state.winLoss} name={this.state.opponentName} select={this.winLoss.bind(this) }/>
         </div>
       </div>
     );
