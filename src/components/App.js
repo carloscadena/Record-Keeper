@@ -31,12 +31,13 @@ export default class App extends Component {
     // evt.preventDefault();
     console.log('fetching players...')
     let self = this;
+    console.log('this at fetch player call', this)
     xhr({
       url: `http://localhost:5400/players/${group}/${myId}`
     }, function (err, data) {
       console.log('data', data);
-      console.log('this', this);
-      console.log('self', self)
+      console.log('this at fetchplayers callback', this.state);
+      console.log('self', self.state)
       self.setState({
         players: JSON.parse(data.body)
       });
@@ -49,6 +50,7 @@ export default class App extends Component {
     xhr({
       url: `http://localhost:5400/groups/${id}`
     }, function (err, data) {
+      console.log('this at fetchgroup callback', this)
       self.setState({
         groups: JSON.parse(data.body).map(ele => ele.group_name)
       });
@@ -60,7 +62,7 @@ export default class App extends Component {
     return (
       <div>
         <Groups
-          select={ this.fetchPlayers }
+          select={ this.fetchPlayers.bind(this) }
           groups={ this.state.groups }
         />
         <h2>Welcome to Score Keep</h2>
