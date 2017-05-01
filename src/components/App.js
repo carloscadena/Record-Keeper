@@ -3,8 +3,8 @@ import xhr from 'xhr';
 import Groups from './Groups';
 import Players from './Players';
 import Opponent from './Opponent';
-// import '.././build/index.css';
-// import '.././build/App.css';
+import '../build/css/index.css';
+import '../build/css/App.css';
 // const BASE_URL = 'https://api.github.com'
 
 export default class App extends Component {
@@ -29,15 +29,15 @@ export default class App extends Component {
 
   fetchPlayers(group, myId) {
     // evt.preventDefault();
-    console.log('fetching players...')
+    // console.log('fetching players...')
     let self = this;
-    console.log('this at fetch player call', this)
+    // console.log('this at fetch player call', this)
     xhr({
       url: `http://localhost:5400/players/${group}/${myId}`
     }, function (err, data) {
-      console.log('data', data);
-      console.log('this at fetchplayers callback', this.state);
-      console.log('self', self.state)
+      // console.log('data', data);
+      // console.log('this at fetchplayers callback', this.state);
+      // console.log('self', self.state)
       self.setState({
         players: JSON.parse(data.body)
       });
@@ -45,12 +45,12 @@ export default class App extends Component {
   };
 
   fetchGroups(id){
-    console.log('fetching groups...')
+    // console.log('fetching groups...')
     let self = this;
     xhr({
       url: `http://localhost:5400/groups/${id}`
     }, function (err, data) {
-      console.log('this at fetchgroup callback', this)
+      // console.log('this at fetchgroup callback', this)
       self.setState({
         groups: JSON.parse(data.body).map(ele => ele.group_name)
       });
@@ -58,7 +58,7 @@ export default class App extends Component {
   };
 
   render() {
-    console.log(this.state.players);
+    // console.log(this.state.players);
     return (
       <div>
         <Groups
@@ -67,7 +67,7 @@ export default class App extends Component {
         />
         <h2>Welcome to Score Keep</h2>
         <div className="players-wrapper">
-          <Players players={this.state.players} select={this.pickOpponent} />
+          <Players players={this.state.players} select={this.pickOpponent.bind(this)} />
           <Opponent opponent={this.state.opponentId} name={this.state.opponentName} />
         </div>
       </div>
