@@ -3,8 +3,8 @@ import xhr from 'xhr';
 import Groups from './Groups';
 import Players from './Players';
 import Opponent from './Opponent';
-import '../build/css/index.css';
-import '../build/css/App.css';
+// import '../build/css/index.css';
+// import '../build/css/App.css';
 // const BASE_URL = 'https://api.github.com'
 
 export default class App extends Component {
@@ -15,7 +15,8 @@ export default class App extends Component {
       opponentName: 'test',
       groups: [],
       players: [],
-      myId: 1
+      myId: 1,
+      winLoss: '',
     }
   };
 
@@ -57,6 +58,11 @@ export default class App extends Component {
     });
   };
 
+  winLoss(status){
+    this.setState({ winLoss: status });
+    console.log('winLoss state updated', status)
+  }
+
   render() {
     // console.log(this.state.players);
     return (
@@ -68,7 +74,7 @@ export default class App extends Component {
         <h2>Welcome to Score Keep</h2>
         <div className="players-wrapper">
           <Players players={this.state.players} select={this.pickOpponent.bind(this)} />
-          <Opponent opponent={this.state.opponentId} name={this.state.opponentName} />
+          <Opponent opponent={this.state.opponentId} name={this.state.opponentName} select={this.winLoss.bind(this) }/>
         </div>
       </div>
     );
