@@ -7,18 +7,18 @@ import { Route, StaticRouter as Router } from 'react-router-dom';
 import { App } from './components/App';
 import { Login } from './components/Login';
 
-
-
 const pg = require('pg');
 const fs = require('fs');
 const express = require('express');
-const cors = require('cors');
-// const bodyParser = require('body-parser');
+// const cors = require('cors');
 const PORT = process.env.PORT || 5400;
 const app = express();
 const conString = 'postgres://william:test@localhost:5432/kilovolt';
 // const conString = 'postgres://localhost:5432';
 const client = new pg.Client(conString);
+const passport = require('passport');
+const GithubStrategy = require('passport-github').Strategy;
+const session = require('express-session');
 
 client.connect();
 client.on('error', function(error) {
@@ -29,9 +29,58 @@ client.on('error', function(error) {
 // app.set('views', path.join(__dirname, 'views'));
 
 app.use(Express.static(path.join(__dirname, 'build')));
-app.use(cors());
+// app.use(cors());
+app.use(session({secret: 'isTopSecret', resave: true, saveUninitialized: true }));
+app.use(passport.initialize());
+app.use(passport.session());
 
-app.get('/', (request, response) => response.sendFile('index.html', {root: '.'}));
+passport.serializeUser(function(user, done) {
+  done(null, user.id);
+});
+
+passport.deserializeUser(function(id, done) {
+  done(null, id);
+});
+
+passport.use(new GithubStrategy({
+  clientID: 'ede580df72c31c310057',
+  clientSecret: '1b5d3e6f859347cb62a4015f10890d2713739a5f',
+  callbackURL: 'http://localhost:5400/auth/github/callback'
+},
+  function(accessToken, refreshToken, profile, done) {
+    return done(null, profile);
+  }
+));
+
+app.get('/', (request, response) => {
+  if (request.isAuthenticated()) {
+    response.redirect('/user')
+  } else {
+    response.sendFile('index.html', { root: path.join(__dirname, './build') })
+  }
+});
+
+app.get('/user', (request, response) => {
+  if (request.isAuthenticated()) {
+    response.sendFile('index.html', { root: path.join(__dirname, './build') })
+  } else {
+    response.redirect('/')
+  }
+});
+
+app.get('/auth/github', passport.authenticate('github'));
+
+app.get('/auth/github/callback', passport.authenticate('github', { failureRedirect: '/' }),
+  function(request, response) {
+    response.redirect('/user');
+  }
+);
+
+app.get('/logout', function(request, response){
+  console.log('logging out');
+  request.logout();
+  response.redirect('/');
+});
 
 app.get('/groups/:id', (request, response) => {
   client.query(`SELECT DISTINCT group_name FROM groups;`)
@@ -64,7 +113,9 @@ app.get('/players/:group/:currentUser', (request, response) => {
 });
 // app.post('/')
 
-app.listen(PORT, () => console.log(`CORS-enabled server listening on port ${PORT}!`));
+// app.listen(PORT, () => console.log(`CORS-enabled server listening on port ${PORT}!`));
+app.listen(PORT, () => console.log(`Server listening on port ${PORT}!`));
+
 
 // --------------------------------------------------//
 // ------- SEED database while in development ------ //

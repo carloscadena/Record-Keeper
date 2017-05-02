@@ -67,6 +67,7 @@ export default class App extends Component {
     // console.log(this.state.players);
     return (
       <div>
+        <a href="/logout">Logout!</a>
         <Groups
           select={ this.fetchPlayers.bind(this) }
           groups={ this.state.groups }
