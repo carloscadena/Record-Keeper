@@ -7,7 +7,7 @@ export default class Players extends React.Component {
       focused: ''
     }
   }
-  updateOpponent (user_data) {
+  updateOpponent(user_data) {
     this.props.select(user_data);
   }
   render() {
