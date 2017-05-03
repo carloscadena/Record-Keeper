@@ -1,20 +1,13 @@
 'use strict';
-import path from 'path';
-import Express from 'express';
-import React from 'react';
-import { renderToString } from 'react-dom/server';
-import { Route, StaticRouter as Router } from 'react-router-dom';
-import { App } from './components/App';
-import { Login } from './components/Login';
 
 const pg = require('pg');
 const fs = require('fs');
 const express = require('express');
-// const cors = require('cors');
+const path = require('path');
 const PORT = process.env.PORT || 5400;
 const app = express();
-const conString = 'postgres://william:test@localhost:5432/kilovolt';
-// const conString = 'postgres://localhost:5432';
+// const conString = 'postgres://william:test@localhost:5432/kilovolt';
+const conString = 'postgres://localhost:5432';
 const client = new pg.Client(conString);
 const passport = require('passport');
 const GithubStrategy = require('passport-github').Strategy;
@@ -24,12 +17,8 @@ client.connect();
 client.on('error', function(error) {
   console.error(error);
 });
-//
-// app.set('view engine', 'ejs');
-// app.set('views', path.join(__dirname, 'views'));
 
-app.use(Express.static(path.join(__dirname, 'build')));
-// app.use(cors());
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({secret: 'isTopSecret', resave: true, saveUninitialized: true }));
 app.use(passport.initialize());
 app.use(passport.session());
@@ -56,13 +45,13 @@ app.get('/', (request, response) => {
   if (request.isAuthenticated()) {
     response.redirect('/user')
   } else {
-    response.sendFile('index.html', { root: path.join(__dirname, './build') })
+    response.sendFile('index.html', { root: path.join(__dirname, './public') })
   }
 });
 
 app.get('/user', (request, response) => {
   if (request.isAuthenticated()) {
-    response.sendFile('index.html', { root: path.join(__dirname, './build') })
+    response.sendFile('index.html', { root: path.join(__dirname, './public') })
   } else {
     response.redirect('/')
   }
@@ -121,7 +110,7 @@ app.listen(PORT, () => console.log(`Server listening on port ${PORT}!`));
 // ------- SEED database while in development ------ //
 // --------------------------------------------------//
 function loadUsers() {
-  fs.readFile('./src/data/users.json', (err, fd) => {
+  fs.readFile('./public/data/users.json', (err, fd) => {
     JSON.parse(fd.toString()).forEach(ele => {
       client.query(
         `INSERT INTO users(user_name) VALUES($1)`,
@@ -132,7 +121,7 @@ function loadUsers() {
   });
 }
 function loadGames() {
-  fs.readFile('./src/data/games.json', (err, fd) => {
+  fs.readFile('./public/data/games.json', (err, fd) => {
     JSON.parse(fd.toString()).forEach(ele => {
       client.query(
         `INSERT INTO games(winner_id, loser_id) VALUES( (SELECT id FROM users WHERE user_name = '${ele.winner}'),
@@ -144,7 +133,7 @@ function loadGames() {
 }
 
 function loadGroups() {
-  fs.readFile('./src/data/groups.json', (err, fd) => {
+  fs.readFile('./public/data/groups.json', (err, fd) => {
     JSON.parse(fd.toString()).forEach(ele => {
       client.query(
         `INSERT INTO groups(group_name, user_id) VALUES( '${ele.group}', (SELECT id FROM users WHERE user_name = '${ele.user}') );`
